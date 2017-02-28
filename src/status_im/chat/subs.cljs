@@ -54,8 +54,12 @@
   (fn [_ [_ chat-id]]
     (reaction (chats/get-by-id chat-id))))
 
-(register-sub
-  :get-commands
+(register-sub :get-bots-suggestions
+  (fn [db _]
+    (let [chat-id (subscribe [:get-current-chat-id])]
+      (reaction (get-in @db [:bots-suggestions @chat-id])))))
+
+(register-sub :get-commands
   (fn [db [_ chat-id]]
     (let [current-chat (or chat-id (@db :current-chat-id))]
       (reaction (or (get-in @db [:chats current-chat :commands]) {})))))

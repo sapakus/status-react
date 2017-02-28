@@ -103,13 +103,22 @@
       db)))
 
 (defn load-contacts! [db _]
-  (let [contacts (->> (contacts/get-all)
-                      (map (fn [{:keys [whisper-identity] :as contact}]
-                             [whisper-identity contact]))
-                      (into {}))]
+  (let [contacts-list   (->> (contacts/get-all)
+                             (map (fn [{:keys [whisper-identity] :as contact}]
+                                    [whisper-identity contact])))
+        global-commands (->> contacts-list
+                             (filter (fn [[_ c]] (:global-command c)))
+                             (map (fn [[id {:keys [global-command]}]]
+                                    [(keyword id) (-> global-command
+                                                      (update :params vals)
+                                                      (assoc :bot id
+                                                             :type :command))]))
+                             (into {}))
+        contacts        (into {} contacts-list)]
     (doseq [[_ contact] contacts]
       (dispatch [:watch-contact contact]))
-    (assoc db :contacts contacts)))
+    (assoc db :contacts contacts
+              :global-commands global-commands)))
 
 (register-handler :load-contacts load-contacts!)
 
@@ -226,7 +235,7 @@
                                     :contacts  (mapv #(hash-map :identity %) contacts)})
                                  default-groups)])
         (doseq [[id {:keys [name photo-path public-key add-chat?
-                            dapp? dapp-url dapp-hash]}] default-contacts]
+                            dapp? dapp-url dapp-hash bot-url]}] default-contacts]
           (let [id' (clojure.core/name id)]
             (when-not (chats id')
               (when add-chat?
@@ -238,7 +247,9 @@
                                          :public-key       public-key
                                          :dapp?            dapp?
                                          :dapp-url         (:en dapp-url)
+                                         :bot-url          bot-url
                                          :dapp-hash        dapp-hash}]]))))))))
+
 
 (register-handler :add-contacts
   (-> add-new-contacts
