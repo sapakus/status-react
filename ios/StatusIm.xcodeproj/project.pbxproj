@@ -143,13 +143,6 @@
 			remoteGlobalIDString = 134814201AA4EA6300B7C361;
 			remoteInfo = TcpSockets;
 		};
-		201067711D477F5E00FA83B6 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2F0276A9E90843E996A0E762 /* UdpSockets.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 134814201AA4EA6300B7C361;
-			remoteInfo = UdpSockets;
-		};
 		201067C31D4789F700FA83B6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 439B6B4B407A4E2AACAFE5BE /* RCTStatus.xcodeproj */;
@@ -452,7 +445,6 @@
 		20B6B6861D92C42600CC5C6A /* QBImagePicker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = QBImagePicker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2756305FAFF144C4A6B0A039 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		2BEE3436791D42248F853999 /* libRCTImageResizer.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTImageResizer.a; sourceTree = "<group>"; };
-		2F0276A9E90843E996A0E762 /* UdpSockets.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = UdpSockets.xcodeproj; path = "../node_modules/react-native-udp/ios/UdpSockets.xcodeproj"; sourceTree = "<group>"; };
 		305F194186D848FDB07AF34C /* RNFS.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNFS.xcodeproj; path = "../node_modules/react-native-fs/RNFS.xcodeproj"; sourceTree = "<group>"; };
 		359B076A658B4FBAB5128B03 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		38A44830EC5708E89387F641 /* Pods-StatusIm.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StatusIm.release.xcconfig"; path = "Pods/Target Support Files/Pods-StatusIm/Pods-StatusIm.release.xcconfig"; sourceTree = "<group>"; };
@@ -695,14 +687,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		2010676E1D477F5E00FA83B6 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				201067721D477F5E00FA83B6 /* libUdpSockets.a */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		201067BA1D4789F700FA83B6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -857,7 +841,6 @@
 				8AE71EE8751F4652B13BFE83 /* RNVectorIcons.xcodeproj */,
 				F090E261B9854867A728CE4F /* RealmReact.xcodeproj */,
 				38E1A2C8D0734EE99E2B16CE /* TcpSockets.xcodeproj */,
-				2F0276A9E90843E996A0E762 /* UdpSockets.xcodeproj */,
 				439B6B4B407A4E2AACAFE5BE /* RCTStatus.xcodeproj */,
 				5E5A7625B76441D984EA8C0D /* RCTImageResizer.xcodeproj */,
 				F3548417D8DA4362B6796A54 /* RNInstabug.xcodeproj */,
@@ -1181,10 +1164,6 @@
 					ProductGroup = 201067551D477F5E00FA83B6 /* Products */;
 					ProjectRef = 38E1A2C8D0734EE99E2B16CE /* TcpSockets.xcodeproj */;
 				},
-				{
-					ProductGroup = 2010676E1D477F5E00FA83B6 /* Products */;
-					ProjectRef = 2F0276A9E90843E996A0E762 /* UdpSockets.xcodeproj */;
-				},
 			);
 			projectRoot = "";
 			targets = (
@@ -1256,13 +1235,6 @@
 			fileType = archive.ar;
 			path = libTcpSockets.a;
 			remoteRef = 2010676C1D477F5E00FA83B6 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		201067721D477F5E00FA83B6 /* libUdpSockets.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libUdpSockets.a;
-			remoteRef = 201067711D477F5E00FA83B6 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		201067C41D4789F700FA83B6 /* libRCTStatus.a */ = {
