@@ -7,6 +7,7 @@
             [status-im.components.action-button.action-button :refer [action-button-view]]
             [status-im.components.action-button.styles :refer [actions-list]]
             [status-im.components.react :refer [view text icon
+                                                touchable-highlight
                                                 list-view
                                                 list-item]]
             [status-im.components.context-menu :refer [context-menu]]
@@ -28,7 +29,10 @@
    [network-icon connected? 56]
    [view {:padding-left 16}
     [text {:style st/badge-name-text}
-     (or name (i18n/label :t/new-network))]]])
+     (or name (i18n/label :t/new-network))]
+    (when connected?
+      [text {:style st/badge-connected-text}
+       (i18n/label :t/connected)])]])
 
 (defn actions-view []
   [view actions-list
@@ -41,18 +45,20 @@
 (defn render-row [{:keys [name connected?] :as row} _ _]
   (list-item
     ^{:key row}
-    [view {:height 64
-           :flex-direction :row
-           :background-color :white
-           :align-items :center
-           :padding-horizontal 16}
-     [network-icon connected? 40]
-     [view {:padding-horizontal 16}
-      [text {:style {:font-size 17 :letter-spacing -0.2 :line-height 20}} name]
-      (when connected?
-        [text {:margin-top 6
-               :style {:font-size 14 :letter-spacing -0.2 :color "#939ba1"}} (i18n/label :t/connected)])]
-     [icon :right_arrow]]))
+    [touchable-highlight {:on-press #(do
+                                       (dispatch [:set :selected-network row])
+                                       (dispatch [:navigate-to :network-details]))}
+     [view {:height 64
+            :flex-direction :row
+            :background-color :white
+            :align-items :center
+            :padding-horizontal 16}
+      [network-icon connected? 40]
+      [view {:padding-horizontal 16}
+       [text {:style {:font-size 17 :letter-spacing -0.2 :line-height 20}} name]
+       (when connected?
+         [text {:margin-top 6
+                :style {:font-size 14 :letter-spacing -0.2 :color "#939ba1"}} (i18n/label :t/connected)])]]]))
 
 (defview network-settings []
   (let [networks [{:name "Mainnet" :connected? false} {:name "Ropsten" :connected? true}]]
@@ -62,16 +68,16 @@
      [view {:flex 1}
       [list-view {:dataSource                (lw/to-datasource networks)
                   :renderRow                 render-row
-                  :keyboardShouldPersistTaps true
+                  :keyboardShouldPersistTaps :always
                   :renderHeader              #(list-item
                                                 [view
                                                  [actions-view]
-                                                 [common/bottom-shaddow]
+                                                 [common/bottom-shadow]
                                                  [common/form-title (i18n/label :t/existing-networks)
                                                   {:count-value (count networks)}]
                                                  [common/list-header]])
                   :renderFooter              #(list-item [view
                                                           [common/list-footer]
-                                                          [common/bottom-shaddow]])
+                                                          [common/bottom-shadow]])
                   :renderSeparator           renderers/list-separator-renderer
                   :style                     st/networks-list}]]]))
