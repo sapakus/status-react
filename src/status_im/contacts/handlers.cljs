@@ -225,30 +225,31 @@
   (u/side-effect!
     (fn [{:keys [chats groups]}]
       (let [default-contacts js-res/default-contacts
-            default-groups js-res/default-contact-groups]
+            default-groups   js-res/default-contact-groups]
         (dispatch [:add-groups (mapv
                                  (fn [[id {:keys [name contacts]}]]
-                                   {:group-id (clojure.core/name id)
+                                   {:group-id  (clojure.core/name id)
                                     :name      (:en name)
                                     :order     0
                                     :timestamp (random/timestamp)
                                     :contacts  (mapv #(hash-map :identity %) contacts)})
                                  default-groups)])
-        (doseq [[id {:keys [name photo-path public-key add-chat?
+        (doseq [[id {:keys [name photo-path public-key add-chat? has-global-command?
                             dapp? dapp-url dapp-hash bot-url]}] default-contacts]
           (let [id' (clojure.core/name id)]
             (when-not (chats id')
               (when add-chat?
                 (dispatch [:add-chat id' {:name (:en name)}]))
-              (dispatch [:add-contacts [{:whisper-identity id'
-                                         :address          (public-key->address id')
-                                         :name             (:en name)
-                                         :photo-path       photo-path
-                                         :public-key       public-key
-                                         :dapp?            dapp?
-                                         :dapp-url         (:en dapp-url)
-                                         :bot-url          bot-url
-                                         :dapp-hash        dapp-hash}]]))))))))
+              (dispatch [:add-contacts [{:whisper-identity    id'
+                                         :address             (public-key->address id')
+                                         :name                (:en name)
+                                         :photo-path          photo-path
+                                         :public-key          public-key
+                                         :dapp?               dapp?
+                                         :dapp-url            (:en dapp-url)
+                                         :bot-url             bot-url
+                                         :has-global-command? has-global-command?
+                                         :dapp-hash           dapp-hash}]]))))))))
 
 
 (register-handler :add-contacts
@@ -281,9 +282,9 @@
 (register-handler :add-pending-contact
   (u/side-effect!
     (fn [{:keys [chats contacts]} [_ chat-id]]
-      (let [contact (if-let [contact-info (get-in chats [chat-id :contact-info])]
-                      (read-string contact-info)
-                      (assoc (get contacts chat-id) :pending? false))
+      (let [contact  (if-let [contact-info (get-in chats [chat-id :contact-info])]
+                       (read-string contact-info)
+                       (assoc (get contacts chat-id) :pending? false))
             contact' (assoc contact :address (public-key->address chat-id))]
         (dispatch [::prepare-contact contact'])
         (dispatch [:watch-contact contact'])

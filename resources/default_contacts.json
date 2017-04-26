@@ -11,7 +11,7 @@
         "photo-path": "icon_wallet_avatar",
         "add-chat?": true,
         "dapp?": true,
-        "groups": ["dapps"]
+        "groups": ["dapps"],
         "has-global-command?": true,
         "dapp-url":
         {

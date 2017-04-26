@@ -2,11 +2,11 @@ function jsSuggestionsContainerStyle(suggestionsCount) {
     return {
         marginVertical: 1,
         marginHorizontal: 0,
-        keyboardShouldPersistTaps: true,
+        keyboardShouldPersistTaps: "always",
         //height: Math.min(150, (56 * suggestionsCount)),
         backgroundColor: "white",
         borderRadius: 5,
-        keyboardShouldPersistTaps: true
+        keyboardShouldPersistTaps: "always"
     };
 }
 
@@ -37,6 +37,7 @@ var jsBoldValueStyle = {
 
 var jsDescriptionStyle = {
     marginTop: 1.5,
+    paddingBottom: 9,
     fontSize: 14,
     fontFamily: "font",
     color: "#838c93de"
@@ -45,9 +46,9 @@ var jsDescriptionStyle = {
 var messages = [];
 
 
-console = (function(old){
+console = (function (old) {
     return {
-        log: function(text){
+        log: function (text) {
             old.log(text);
             var message = {
                 type: 'log',
@@ -81,9 +82,8 @@ console = (function(old){
 }(console));
 
 
-
 if (!String.prototype.startsWith) {
-    String.prototype.startsWith = function(searchString, position){
+    String.prototype.startsWith = function (searchString, position) {
         position = position || 0;
         return this.substr(position, searchString.length) === searchString;
     };
@@ -153,16 +153,16 @@ function getLastForm(code) {
     var form = '';
     var level = 0;
     var index = codeLength - 1;
-    while(index >= 0) {
+    while (index >= 0) {
         var char = code[index];
         if (level == 0 && (char == '(' || char == ',')) {
             break;
         }
         if (char == ')') {
-            level --;
+            level--;
         }
         if (char == '(') {
-            level ++;
+            level++;
         }
         form = char + form;
         index--;
@@ -176,7 +176,7 @@ function getLastLevel(code) {
     var index = codeLength - 1;
     var nested = false;
     var level = 0;
-    while(index >= 0) {
+    while (index >= 0) {
         var char = code[index];
         if (char == ')') {
             level--;
@@ -349,9 +349,6 @@ function createMarkupText(text) {
 }
 
 function jsSuggestions(params, context) {
-
-    console.log(context);
-
     var suggestions = getJsSuggestions(params.code, context);
     var sugestionsMarkup = [];
 
@@ -371,7 +368,8 @@ function jsSuggestions(params, context) {
                 ])]);
         if (suggestion.pressValue) {
             suggestionMarkup = status.components.touchable({
-                    onPress: [status.events.SET_VALUE, suggestion.pressValue]},
+                    onPress: [status.events.SET_VALUE, suggestion.pressValue]
+                },
                 suggestionMarkup);
         }
         sugestionsMarkup.push(suggestionMarkup);
@@ -386,7 +384,6 @@ function jsSuggestions(params, context) {
 }
 
 
-
 function jsHandler(params, context) {
     var result = {
         err: null,
@@ -397,7 +394,7 @@ function jsHandler(params, context) {
     try {
         result.data = JSON.stringify(eval(params.code));
         localStorage.set(params.code);
-    } catch(e) {
+    } catch (e) {
         result.err = e;
     }
 
@@ -406,30 +403,11 @@ function jsHandler(params, context) {
     return result;
 }
 
-var phones = [ // TODO this is supposed to be regionalised
-    {
-        number: "89171111111",
-        description: "Number format 1"
-    },
-    {
-        number: "89371111111",
-        description: "Number format 1"
-    },
-    {
-        number: "+79171111111",
-        description: "Number format 2"
-    },
-    {
-        number: "9171111111",
-        description: "Number format 3"
-    }
-];
-
 function suggestionsContainerStyle(suggestionsCount) {
     return {
         marginVertical: 1,
         marginHorizontal: 0,
-        keyboardShouldPersistTaps: true,
+        keyboardShouldPersistTaps: "always",
         height: Math.min(150, (56 * suggestionsCount)),
         backgroundColor: "white",
         borderRadius: 5,
@@ -483,7 +461,7 @@ function phoneSuggestions(params, context) {
 
     suggestions = ph.map(function (phone) {
         return status.components.touchable(
-            {onPress: [status.events.SET_VALUE, phone.number]},
+            {onPress: [status.events.SET_COMMAND_ARGUMENT, [0, phone.number]]},
             status.components.view(suggestionContainerStyle,
                 [status.components.view(suggestionSubContainerStyle,
                     [
@@ -499,14 +477,6 @@ function phoneSuggestions(params, context) {
         );
     });
 
-    /*var view = status.components.view(
-     {style: {flex: 1, flexDirection: "column"}},
-     [status.components.scrollView(
-     suggestionsContainerStyle(ph.length),
-     suggestions
-     )]
-     );*/
-
     var view = status.components.scrollView(
         suggestionsContainerStyle(ph.length),
         suggestions
@@ -517,10 +487,12 @@ function phoneSuggestions(params, context) {
 
 var phoneConfig = {
     name: "phone",
+    registeredOnly: true,
     icon: "phone_white",
+    color: "#5bb2a2",
     title: I18n.t('phone_title'),
     description: I18n.t('phone_description'),
-    color: "#5bb2a2",
+    sequentialParams: true,
     validator: function (params) {
         return {
             validationHandler: "phone",
@@ -538,10 +510,10 @@ status.response(phoneConfig);
 status.command(phoneConfig);
 
 var faucets = [
-    {
-        name: "Ethereum Ropsten Faucet",
-        url: "http://faucet.ropsten.be:3001"
-    },
+    /*{
+     name: "Ethereum Ropsten Faucet",
+     url: "http://faucet.ropsten.be:3001"
+     },*/
     {
         name: "Status Testnet Faucet",
         url: "http://46.101.129.137:3001",
@@ -549,9 +521,9 @@ var faucets = [
 ];
 
 function faucetSuggestions(params) {
-    var suggestions = faucets.map(function(entry) {
+    var suggestions = faucets.map(function (entry) {
         return status.components.touchable(
-            {onPress: [status.events.SET_VALUE, entry.url]},
+            {onPress: [status.events.SET_COMMAND_ARGUMENT, [0, entry.url]]},
             status.components.view(
                 suggestionContainerStyle,
                 [status.components.view(
@@ -592,16 +564,20 @@ status.command({
         placeholder: I18n.t('faucet_placeholder')
     }],
     preview: function (params) {
-        return status.components.text(
-            {},
-            params.url
-        );
+        return {
+            markup: status.components.text(
+                {},
+                params.url
+            )
+        };
     },
     shortPreview: function (params) {
-        return status.components.text(
-            {},
-            I18n.t('faucet_title') + ": " + params.url
-        );
+        return {
+            markup: status.components.text(
+                {},
+                I18n.t('faucet_title') + ": " + params.url
+            )
+        };
     },
     validator: function (params, context) {
         var f = faucets.map(function (entry) {
@@ -614,15 +590,15 @@ status.command({
                 I18n.t('faucet_incorrect_description')
             );
 
-            return {errors: [error]};
+            return {markup: error};
         }
     }
 });
 
 function debugSuggestions(params) {
-    var suggestions = ["On", "Off"].map(function(entry) {
+    var suggestions = ["On", "Off"].map(function (entry) {
         return status.components.touchable(
-            {onPress: [status.events.SET_VALUE, entry]},
+            {onPress: [status.events.SET_COMMAND_ARGUMENT, [0, entry]]},
             status.components.view(
                 suggestionContainerStyle,
                 [status.components.view(
@@ -658,41 +634,21 @@ status.command({
         type: status.types.TEXT
     }],
     preview: function (params) {
-        return status.components.text(
-            {},
-            I18n.t('debug_mode_title') + ": " + params.mode
-        );
+        return {
+            markup: status.components.text(
+                {},
+                I18n.t('debug_mode_title') + ": " + params.mode
+            )
+        };
     },
     shortPreview: function (params) {
-        return status.components.text(
-            {},
-            I18n.t('debug_mode_title') + ": " + params.mode
-        );
+        return {
+            markup: status.components.text(
+                {},
+                I18n.t('debug_mode_title') + ": " + params.mode
+            )
+        };
     }
-});
-
-function browseSuggestions(params) {
-    if (params.url && params.url !== "undefined" && params.url != "") {
-        var url = params.url;
-        if (!/^[a-zA-Z-_]+:/.test(url)) {
-            url = 'http://' + url;
-        }
-
-        return {webViewUrl: url};
-    }
-}
-
-status.command({
-    name: "browse",
-    color: "#ffa500",
-    hidden: true,
-    fullscreen: true,
-    suggestionsTrigger: 'on-send',
-    params: [{
-        name: "url",
-        suggestions: browseSuggestions,
-        type: status.types.TEXT
-    }]
 });
 
 
@@ -711,6 +667,7 @@ status.response({
     name: "confirmation-code",
     color: "#7099e6",
     description: I18n.t('confirm_description'),
+    sequentialParams: true,
     params: [{
         name: "code",
         type: status.types.NUMBER
@@ -722,7 +679,7 @@ status.response({
                 I18n.t('confirm_validation_description')
             );
 
-            return {errors: [error]}
+            return {markup: error};
         }
     }
 });
@@ -732,48 +689,40 @@ status.response({
     color: "#7099e6",
     description: I18n.t('password_description'),
     icon: "lock_white",
-    params: [{
-        name: "password",
-        type: status.types.PASSWORD,
-        placeholder: I18n.t('password_placeholder'),
-        hidden: true
-    }, {
-        name: "password-confirmation",
-        type: status.types.PASSWORD,
-        placeholder: I18n.t('password_placeholder2'),
-        hidden: true
-    }],
+    sequentialParams: true,
+    params: [
+        {
+            name: "password",
+            type: status.types.PASSWORD,
+            placeholder: I18n.t('password_placeholder'),
+            hidden: true
+        },
+        {
+            name: "password-confirmation",
+            type: status.types.PASSWORD,
+            placeholder: I18n.t('password_placeholder2'),
+            hidden: true
+        }
+    ],
     validator: function (params, context) {
-        var errorMessages = [];
-        var currentParameter = context["current-parameter"];
-
-        if (
-            currentParameter == "password" &&
-            params.password.length < 6
-        ) {
-            errorMessages.push(I18n.t('password_error'));
-        }
-
-        if (currentParameter == "password-confirmation" &&
-            params.password != params["password-confirmation"]) {
-            errorMessages.push(I18n.t('password_error1'));
-        }
-
-        if (errorMessages.length) {
-            var errors = [];
-            for (var idx in errorMessages) {
-                errors.push(
-                    status.components.validationMessage(
-                        I18n.t('password_validation_title'),
-                        errorMessages[idx]
-                    )
+        if (!params.hasOwnProperty("password-confirmation") || params["password-confirmation"].length === 0) {
+            if (params.password === null || params.password.length < 6) {
+                var error = status.components.validationMessage(
+                    I18n.t('password_validation_title'),
+                    I18n.t('password_error')
                 );
+                return {markup: error};
             }
-
-            return {errors: errors};
+        } else {
+            if (params.password !== params["password-confirmation"]) {
+                var error = status.components.validationMessage(
+                    I18n.t('password_validation_title'),
+                    I18n.t('password_error1')
+                );
+                return {markup: error};
+            }
         }
 
-        return {params: params, context: context};
     },
     preview: function (params, context) {
         var style = {
@@ -790,14 +739,14 @@ status.response({
             style.letterSpacing = 1;
         }
 
-        return status.components.text({style: style}, "●●●●●●●●●●");
+        return {markup: status.components.text({style: style}, "●●●●●●●●●●")};
     }
 });
 
-status.registerFunction("message-suggestions", function(params, context) {
+status.registerFunction("message-suggestions", function (params, context) {
     return jsSuggestions({code: params.message}, context);
 });
 
-status.registerFunction("message-handler", function(params, context) {
+status.registerFunction("message-handler", function (params, context) {
     return jsHandler({code: params.message}, context);
 });

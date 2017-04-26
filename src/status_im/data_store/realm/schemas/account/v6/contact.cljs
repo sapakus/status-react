@@ -29,4 +29,4 @@
                                              :default false}}})
 
 (defn migration [old-realm new-realm]
-  (log/debug "migrating contact schema v5"))
+  (log/debug "migrating contact schema v6"))
