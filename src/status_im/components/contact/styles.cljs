@@ -36,11 +36,14 @@
    :background-color common/color-white
    :padding-right    16})
 
-(def more-btn
+(def more-btn-container
   {:width          24
    :height         24
    :alignItems     :center
    :justifyContent :center})
+
+(def more-btn
+  {:padding 16})
 
 (def selected-contact
   {:background-color common/selected-contact-color})

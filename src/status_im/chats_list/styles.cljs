@@ -152,11 +152,14 @@
   {:flex-direction :row
    :padding-right  14})
 
-(def opts-btn
+(def opts-btn-container
   {:width           24
    :height          24
    :align-items     :center
    :justify-content :center})
+
+(def opts-btn
+  {:padding 16})
 
 (def create-icon
   {:fontSize 20
